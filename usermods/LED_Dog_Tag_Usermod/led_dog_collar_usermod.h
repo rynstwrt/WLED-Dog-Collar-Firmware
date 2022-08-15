@@ -3,7 +3,7 @@
 #include <../usermods/LED_Dog_Tag_Usermod/led_dog_collar_effect_data.h>
 
 
-#define NUM_EFFECTS 12
+#define NUM_EFFECTS 11
 #define PALETTE 11 // Rainbow
 #define BRIGHTNESS 25
 
@@ -11,7 +11,6 @@
 
 #define BUTTON_PIN 14
 #define BUTTON_DEBOUNCE 100
-#define BUTTON_HOLD_TIME 1500
 
 
 class LEDDogCollarUsermod : public Usermod 
@@ -20,10 +19,9 @@ class LEDDogCollarUsermod : public Usermod
 		unsigned long lastLoopTime = 0;
 
 		LEDDogCollarEffectData* effectData[NUM_EFFECTS];
-		int effectPos = 11;
+		int effectPos = 0;
 
 		long lastButtonPressTime = 0;
-		long lastButtonReleaseTime = 0;
 		int lastButtonState = LOW;
 
 
@@ -44,7 +42,6 @@ class LEDDogCollarUsermod : public Usermod
 		void setup()
 		{
 			Serial.begin(115200);
-			//while (!Serial);
 
 			pinMode(BUTTON_PIN, INPUT_PULLUP);
 
@@ -75,43 +72,31 @@ class LEDDogCollarUsermod : public Usermod
 			{
 				int buttonState = digitalRead(BUTTON_PIN);
 
-				if (buttonState != lastButtonState && millis() - lastButtonReleaseTime > BUTTON_DEBOUNCE) // If button pressed or released
+				if (buttonState != lastButtonState && millis() - lastButtonPressTime > BUTTON_DEBOUNCE) // If button pressed or released
 				{
 					if (buttonState) // If was pressed down
 					{
-						Serial.println("PRESSED");
+					
+						++effectPos;
+						if (effectPos >= NUM_EFFECTS)
+							effectPos = 0;
+
+						applyEffect();
+
+
 						lastButtonPressTime = millis();
-						
-					}
-					else // If was released
-					{
-						
-
-						if (millis() - lastButtonPressTime > BUTTON_HOLD_TIME) // If long hold
-						{ 
-							Serial.println("LONG PRESS RELEASE");
-
-							bri = (bri == BRIGHTNESS) ? BRIGHTNESS / 2 : BRIGHTNESS;
-							stateUpdated(CALL_MODE_DIRECT_CHANGE);
-						}
-						else // If regular button release
-						{
-							Serial.println("NORMAL RELEASE");
-
-							++effectPos;
-							if (effectPos >= NUM_EFFECTS)
-								effectPos = 0;
-
-							applyEffect();
-						}
-
-						lastButtonReleaseTime = millis();
 					}
 
 					lastButtonState = buttonState;					
 				}
 
-				
+				lastLoopTime = millis();
 			}
+		}
+
+
+		uint16_t getId()
+		{
+			return USERMOD_RYN_COLLAR;
 		}
 };

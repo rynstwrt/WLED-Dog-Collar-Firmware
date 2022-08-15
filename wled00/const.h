@@ -72,6 +72,7 @@
 #define USERMOD_ID_QUINLED_AN_PENTA      23     //Usermod "quinled-an-penta.h"
 #define USERMOD_ID_SSDR                  24     //Usermod "usermod_v2_seven_segment_display_reloaded.h"
 #define USERMOD_ID_CRONIXIE              25     //Usermod "usermod_cronixie.h"
+#define USERMOD_RYN_COLLAR               26     //Usermod "led_dog_collar_usermod.h"
 
 //Access point behavior
 #define AP_BEHAVIOR_BOOT_NO_CONN          0     //Open AP when no connection after boot
@@ -343,7 +344,7 @@
 #endif
 
 #ifndef DEFAULT_LED_COUNT
-  #define DEFAULT_LED_COUNT 30
+  #define DEFAULT_LED_COUNT 16
 #endif
 
 #define INTERFACE_UPDATE_COOLDOWN 2000 //time in ms to wait between websockets, alexa, and MQTT updates
